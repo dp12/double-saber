@@ -1,0 +1,104 @@
+*  [[file:https://i.imgur.com/7axtkyH.png]] double-saber
+
+[[https://travis-ci.org/dp12/double-saber][file:https://api.travis-ci.org/dp12/double-saber.png?branch=master]]
+[[http://www.gnu.org/licenses/gpl-3.0.html][file:http://img.shields.io/:license-gpl3-blue.svg]]
+
+* Overview
+Search buffer output from tools like [[https://github.com/nlamirault/ripgrep.el][ripgrep]], [[https://github.com/leoliu/ggtags][ggtags]], or [[https://oremacs.com/2015/11/04/ivy-occur/][ivy-occur]] often gets cluttered with results that are irrevelant. How can we remove the unwanted cruft?
+
+double-saber provides two methods of cutting away undesired output: narrow and delete.
+
+=double-saber-narrow= (bound to =n=) deletes all lines of text that don't match a certain keyword.
+
+=double-saber-delete= (bound to =d=) does the inverse and deletes all matching lines.
+
+=double-saber-sort-lines= (bound to =s=) will sort the search buffer output, as an additional feature.
+
+[[file:double-saber.gif]]
+
+Smite undesired output by either providing a single regexp (with no spaces), or a series of space-delimited strings. For fans of narrowing (e.g. =narrow-to-defun= or =narrow-region=), it essentially acts like the mythical "=narrow-regexp=" tool.
+
+Please note that double-saber, being a chopping weapon, is not meant to be very intelligent or precise. It won't play nicely with packages like [[https://github.com/Wilfred/deadgrep][deadgrep]] that interleave lines of search metadata between search results. But when grep is spitting out dark clouds of text and raw greptitude does not avail you, it might be exactly what you need.
+* Installation
+You can load double-saber with use-package:
+#+begin_src emacs-lisp
+  (use-package double-saber
+    :load-path "~/double-saber"
+    :config
+    (with-eval-after-load "ripgrep"
+      (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished"))
+#+end_src
+
+Or the traditional way with require:
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/path/to/double-saber-dir/")
+  (require 'double-saber)
+  (with-eval-after-load "ripgrep"
+    (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished"))
+#+end_src
+
+The =double-saber-mode-setup= function can be used with an arbitrary mode to set up double-saber with some default keybindings. It needs to be called with the following items:
+- The mode-map (most likely the major mode's name followed by "-mode-map")
+- The mode-hook (most likely the major mode's name followed by "-mode-hook")
+- The start line where double-saber should start deleting/narrowing from. In most cases, it should be the line after the search command. Can be =nil=.
+- The end text, which denotes the line beyond which double-saber should not delete (inclusive). This prevents useful text like the number of search hits from getting deleted. Can be =nil=.
+
+=double-saber-mode-setup= sets up the following keybinds for the major mode specified:
+| Key          | Command                 |
+|--------------+-------------------------|
+| =d=          | double-saber-delete     |
+| =x=          | double-saber-narrow     |
+| =s=          | double-saber-sort-lines |
+| =u=          | double-saber-undo       |
+| =C-r=, =C-_= | double-saber-redo       |
+
+
+The following are examples of setting up double-saber for different major modes:
+#+begin_src emacs-lisp
+(double-saber-mode-setup ggtags-global-mode-map 'ggtags-global-mode-hook 5 "Global found")
+(double-saber-mode-setup grep-mode-map 'grep-mode-hook 5 "Grep finished")
+(double-saber-mode-setup ivy-occur-grep-mode-map 'ivy-occur-grep-mode-hook 5 nil)
+#+end_src
+* Hydras and Transient States
+If you have abo-abo's excellent [[https://github.com/abo-abo/hydra][hydra]] package, you can define a keymap to narrow or delete specific strings without having to type them.
+#+begin_src emacs-lisp
+  (defhydra hydra-foo-filter ()
+    "Foo filter"
+    ("0" (double-saber-delete "foo0") "foo0")
+    ("1" (double-saber-delete "foo1") "foo1")
+    ("2" (double-saber-delete "foo2") "foo2")
+    ("b" (double-saber-delete "bar") "bar")
+    ("z" (double-saber-delete "baz") "baz")
+    ("h" (double-saber-narrow "\.h:") "*.h")
+    ("d" (call-interactively 'double-saber-delete) "delete")
+    ("x" (call-interactively 'double-saber-narrow) "narrow")
+    ("q" nil "quit" :exit t ))
+  (with-eval-after-load "ripgrep"
+    (define-key ripgrep-search-mode-map (kbd "x") 'hydra-foo-filter/body))
+#+end_src
+
+Or, if you are a spacemacs user, you can use =spacemacs|define-transient-state=:
+#+begin_src emacs-lisp
+  (spacemacs|define-transient-state foo-filter
+    :title "Foo Filter Transient State"
+    :doc
+    "\n[_0_] foo0  [_1_] foo1  [_2_] foo2  [_b_] bar  [_z_] baz  [_h_] *.h  [_d_] delete  [_x_] narrow  [_q_] quit"
+    :bindings
+    ("0" (double-saber-delete "foo0"))
+    ("1" (double-saber-delete "foo1"))
+    ("2" (double-saber-delete "foo2"))
+    ("b" (double-saber-delete "bar"))
+    ("z" (double-saber-delete "baz"))
+    ("h" (double-saber-narrow "\.h:"))
+    ("d" (call-interactively 'double-saber-delete))
+    ("x" (call-interactively 'double-saber-narrow))
+    ("q" nil :exit t))
+  (with-eval-after-load "ripgrep"
+    (define-key ripgrep-search-mode-map (kbd "x") 'spacemacs/foo-filter-transient-state/body))
+#+end_src
+* Misc
+double-saber is integration-tested with ecukes [[https://github.com/ecukes/ecukes][🥒]] and is licensed under the GPLv3.
+
+Saber icon by [[http://bogo-d.deviantart.com][Mihaiciuc Bogdan]], with slight modifications.
+
+Feature requests and contributions welcome!
