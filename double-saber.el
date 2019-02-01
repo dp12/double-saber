@@ -31,9 +31,15 @@
 ;; (double-saber-mode-setup ggtags-global-mode-map 'ggtags-global-mode-hook 5 "Global found")
 ;; (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished")
 ;; (double-saber-mode-setup ivy-occur-grep-mode-map 'ivy-occur-grep-mode-hook 5 nil)
+;;
+;; (add-hook 'ripgrep-search-mode-hook
+          ;; (lambda ()
+            ;; (double-saber-mode)
+            ;; (setq-local double-saber-start-line 5)
+            ;; (setq-local double-saber-end-text "Ripgrep finished")))
 
 ;;; Code:
-(eval-when-compile (require 'subr-x)) ;; for string-trim
+(require 'subr-x) ;; for string-trim
 
 (defvar double-saber-start-line 5)
 (defvar double-saber-end-text nil)
@@ -41,19 +47,6 @@
 ;;;
 ;;; Private functions
 ;;;
-(defun double-saber--save-and-clear-read-only ()
-  "Clear ‘buffer-read-only’ and save the original ‘buffer-read-only’ state."
-  (let ((initial-read-only buffer-read-only))
-    (buffer-enable-undo)
-    (read-only-mode -1)
-    initial-read-only))
-
-(defun double-saber--restore-read-only (read-only)
-  "Restore ‘buffer-read-only’ state based on the READ-ONLY argument given."
-  (if read-only
-      (read-only-mode 1)
-    (read-only-mode -1)))
-
 (defun double-saber--start-point ()
   "Determine the start point of the region to act on."
   (save-excursion
@@ -94,12 +87,11 @@ strings. All lines that do not match the regular expression or one of the
 strings is deleted."
   (interactive
    (list (read-string "Narrow regex/strings: ")))
-  (let ((initial-read-only (double-saber--save-and-clear-read-only)))
-    (unwind-protect
-        (delete-non-matching-lines (double-saber--get-regexp filter)
-                                   (double-saber--start-point)
-                                   (double-saber--end-point))
-      (double-saber--restore-read-only initial-read-only))))
+  (let ((inhibit-read-only t))
+    (buffer-enable-undo)
+    (delete-non-matching-lines (double-saber--get-regexp filter)
+                               (double-saber--start-point)
+                               (double-saber--end-point))))
 
 (defun double-saber-delete (&optional filter)
   "Delete all lines in the buffer using FILTER.
@@ -108,41 +100,35 @@ strings. All lines that match the regular expression or one of the strings is
 deleted."
   (interactive
    (list (read-string "Delete regex/strings: ")))
-  (let ((initial-read-only (double-saber--save-and-clear-read-only)))
-    (unwind-protect
-        (delete-matching-lines (double-saber--get-regexp filter)
-                               (double-saber--start-point)
-                               (double-saber--end-point))
-      (double-saber--restore-read-only initial-read-only))))
+  (let ((inhibit-read-only t))
+    (buffer-enable-undo)
+    (delete-matching-lines (double-saber--get-regexp filter)
+                           (double-saber--start-point)
+                           (double-saber--end-point))))
 
 (defun double-saber-sort-lines (&optional reverse)
   "Sort lines in the search buffer output.
 If the REVERSE flag is true, the lines are sorted in reverse order."
   (interactive)
-  (let ((initial-read-only (double-saber--save-and-clear-read-only)))
-    (unwind-protect
-        (sort-lines reverse (double-saber--start-point) (double-saber--end-point))
-      (double-saber--restore-read-only initial-read-only))))
+  (let ((inhibit-read-only t))
+    (buffer-enable-undo)
+    (sort-lines reverse (double-saber--start-point) (double-saber--end-point))))
 
 (defun double-saber-undo (&optional arg)
   "Undo changes. An optional numeric ARG serves as a repeat count."
   (interactive "P")
-  (let ((initial-read-only (double-saber--save-and-clear-read-only)))
-    (unwind-protect
-        (if (fboundp 'undo-tree-undo)
-            (undo-tree-undo arg)
-          (undo arg))
-      (double-saber--restore-read-only initial-read-only))))
+  (let ((inhibit-read-only t))
+    (if (fboundp 'undo-tree-undo)
+        (undo-tree-undo arg)
+      (undo arg))))
 
 (defun double-saber-redo (&optional arg)
   "Redo changes. An optional numeric ARG serves as a repeat count."
   (interactive "P")
-  (let ((initial-read-only (double-saber--save-and-clear-read-only)))
-    (unwind-protect
-        (if (fboundp 'undo-tree-redo)
-            (undo-tree-redo arg)
-          (undo arg))
-      (double-saber--restore-read-only initial-read-only))))
+  (let ((inhibit-read-only t))
+    (if (fboundp 'undo-tree-redo)
+        (undo-tree-redo arg)
+      (undo arg))))
 
 ;; Mode-specific setup
 (defun double-saber-mode-setup (keymap hook &optional start-line end-text)

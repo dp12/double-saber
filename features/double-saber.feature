@@ -218,7 +218,7 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
 """
 
 
-  Scenario: Save and restore read-only status
+  Scenario: Preserve read-only status
     When I turn on read-only-mode
     And I start an action chain
     And I press "d"
@@ -238,7 +238,7 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
 """
 
 
-  Scenario: Save and restore read-only off status
+  Scenario: Preserve read-only off status
     When I turn off read-only-mode
     And I start an action chain
     And I press "x"
@@ -253,6 +253,59 @@ Grep started at hello world Fri Dec 20 00:20:48
 
 grep --color -nH --null -e buffer double-saber.el
 double-saber.el:110:  "Sort lines in the search buffer output.
+
+Grep finished with 14 matches found at Fri Dec 20 00:20:48
+"""
+
+
+  Scenario: Sort lines
+    When I turn off read-only-mode
+    And the buffer is empty
+    And I insert:
+"""
+-*- mode: grep; default-directory: "~/double-saber/" -*-
+Grep started at Fri Dec 20 00:20:48
+
+grep --color -nH --null -e buffer double-saber.el
+double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
+double-saber.el:41:  "Clear buffer-read-only and save the original buffer-read-only state."
+double-saber.el:42:  (let ((initial-read-only buffer-read-only))
+double-saber.el:43:    (buffer-enable-undo)
+double-saber.el:48:  "Restore buffer-read-only state based on the READ-ONLY argument given."
+double-saber.el:66:          (end-of-buffer))
+double-saber.el:67:      (end-of-buffer))
+double-saber.el:81:  "Narrow the search buffer output using FILTER.
+double-saber.el:96:  "Delete all lines in the buffer using FILTER.
+double-saber.el:110:  "Sort lines in the search buffer output.
+double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
+double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
+double-saber.el:150:buffer."
+
+Grep finished with 14 matches found at Fri Dec 20 00:20:48
+"""
+    And I turn on grep-mode
+    And I start an action chain
+    And I press "s"
+    And I execute the action chain
+    Then I should see:
+"""
+-*- mode: grep; default-directory: "~/double-saber/" -*-
+Grep started at Fri Dec 20 00:20:48
+
+grep --color -nH --null -e buffer double-saber.el
+double-saber.el:110:  "Sort lines in the search buffer output.
+double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
+double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
+double-saber.el:150:buffer."
+double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
+double-saber.el:41:  "Clear buffer-read-only and save the original buffer-read-only state."
+double-saber.el:42:  (let ((initial-read-only buffer-read-only))
+double-saber.el:43:    (buffer-enable-undo)
+double-saber.el:48:  "Restore buffer-read-only state based on the READ-ONLY argument given."
+double-saber.el:66:          (end-of-buffer))
+double-saber.el:67:      (end-of-buffer))
+double-saber.el:81:  "Narrow the search buffer output using FILTER.
+double-saber.el:96:  "Delete all lines in the buffer using FILTER.
 
 Grep finished with 14 matches found at Fri Dec 20 00:20:48
 """
