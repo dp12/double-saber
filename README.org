@@ -26,7 +26,11 @@ You can load double-saber with use-package:
     :load-path "~/double-saber"
     :config
     (with-eval-after-load "ripgrep"
-      (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished"))
+      (add-hook 'ripgrep-search-mode-hook
+                (lambda ()
+                  (double-saber-mode)
+                  (setq-local double-saber-start-line 5)
+                  (setq-local double-saber-end-text "Ripgrep finished"))))
 #+end_src
 
 Or the traditional way with require:
@@ -34,16 +38,18 @@ Or the traditional way with require:
   (add-to-list 'load-path "/path/to/double-saber-dir/")
   (require 'double-saber)
   (with-eval-after-load "ripgrep"
-    (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished"))
+    (add-hook 'ripgrep-search-mode-hook
+              (lambda ()
+                (double-saber-mode)
+                (setq-local double-saber-start-line 5)
+                (setq-local double-saber-end-text "Ripgrep finished"))))
 #+end_src
 
-The =double-saber-mode-setup= function can be used with an arbitrary mode to set up double-saber with some default keybindings. It needs to be called with the following items:
-- The mode-map (most likely the major mode's name followed by "-mode-map")
-- The mode-hook (most likely the major mode's name followed by "-mode-hook")
-- The start line where double-saber should start deleting/narrowing from. In most cases, it should be the line after the search command. Can be =nil=.
-- The end text, which denotes the line beyond which double-saber should not delete (inclusive). This prevents useful text like the number of search hits from getting deleted. Can be =nil=.
+To get double-saber working for a given mode, you can enable =double-saber-mode= in that function's mode hook, as shown above. Additionally, you probably want to set the following variables locally for that mode: 
+- =double-saber-start-line=: The start line where double-saber should start deleting/narrowing from. In most cases, it should be the line after the search command. Can be =nil=.
+- =double-saber-end-text=: The end text, which denotes the line beyond which double-saber should not delete (inclusive). This prevents useful text like the number of search hits from getting deleted. Can be =nil=.
 
-=double-saber-mode-setup= sets up the following keybinds for the major mode specified:
+=double-saber-mode= provides the following keybinds when enabled:
 | Key          | Command                 |
 |--------------+-------------------------|
 | =d=          | double-saber-delete     |
@@ -55,9 +61,26 @@ The =double-saber-mode-setup= function can be used with an arbitrary mode to set
 
 The following are examples of setting up double-saber for different major modes:
 #+begin_src emacs-lisp
-(double-saber-mode-setup ggtags-global-mode-map 'ggtags-global-mode-hook 5 "Global found")
-(double-saber-mode-setup grep-mode-map 'grep-mode-hook 5 "Grep finished")
-(double-saber-mode-setup ivy-occur-grep-mode-map 'ivy-occur-grep-mode-hook 5 nil)
+
+(with-eval-after-load "grep"
+  (add-hook 'grep-mode-hook
+            (lambda ()
+              (double-saber-mode)
+              (setq-local double-saber-start-line 5)
+              (setq-local double-saber-end-text "Grep finished")))
+
+(with-eval-after-load "ggtags"
+  (add-hook 'ggtags-global-mode-hook
+            (lambda ()
+              (double-saber-mode)
+              (setq-local double-saber-start-line 5)
+              (setq-local double-saber-end-text "Global found"))))
+
+(with-eval-after-load "ivy"
+  (add-hook 'ivy-occur-grep-mode-hook
+            (lambda ()
+              (double-saber-mode)
+              (setq-local double-saber-start-line 5)))
 #+end_src
 * Hydras and Transient States
 If you have abo-abo's excellent [[https://github.com/abo-abo/hydra][hydra]] package, you can define a keymap to narrow or delete specific strings without having to type them.

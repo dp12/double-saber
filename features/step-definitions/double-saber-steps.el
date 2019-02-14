@@ -2,9 +2,13 @@
 ;; files in this directory whose names end with "-steps.el" will be
 ;; loaded automatically by Ecukes.
 
-(When "^I call the double-saber-mode-setup for grep$"
+(When "^I set up double-saber-mode for grep$"
       (lambda ()
-        (double-saber-mode-setup grep-mode-map 'grep-mode-hook 5 "Grep finished")))
+        (add-hook 'grep-mode-hook
+                  (lambda ()
+                    (double-saber-mode)
+                    (setq-local double-saber-start-line 5)
+                    (setq-local double-saber-end-text "Grep finished")))))
 
 (Then "^inserting \"hello world\" should throw an error"
       (lambda ()

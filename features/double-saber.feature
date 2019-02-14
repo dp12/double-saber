@@ -7,73 +7,67 @@ Feature: Delete and narrow in search buffers
     Given I switch to buffer "*grep*"
     And I insert:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:41:  "Clear buffer-read-only and save the original buffer-read-only state."
-double-saber.el:42:  (let ((initial-read-only buffer-read-only))
-double-saber.el:43:    (buffer-enable-undo)
-double-saber.el:48:  "Restore buffer-read-only state based on the READ-ONLY argument given."
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2393:      (setq undo-in-region
+./simple.el.gz:2395:      (if undo-in-region
+./simple.el.gz:2409:                                (if undo-in-region " in region" ""))))
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
-    And I call the double-saber-mode-setup for grep
+    And I set up double-saber-mode for grep
     And I turn on grep-mode
 
 
   Scenario: Delete with regexp
     When I start an action chain
     And I press "d"
-    And I type "buffer-\(read\|enable\)"
+    And I type "\(setq\|if\)[[:blank:]]undo"
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
   Scenario: Delete with multiple strings
     When I start an action chain
     And I press "d"
-    And I type "Narrow Delete END-TEXT"
+    And I type "redo don't let"
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -81,21 +75,19 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I press "u"
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -103,17 +95,16 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I press "C-r"
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -121,38 +112,38 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I press "u"
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
   Scenario: Narrow with regexp
     When I start an action chain
     And I press "x"
-    And I type "[^D]eleted"
+    And I type "\(defvar\|redo\)"
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2481:(defvar undo-in-progress nil
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -160,41 +151,39 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I press "u"
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
   Scenario: Narrow with multiple strings
     When I start an action chain
     And I press "x"
-    And I type "Narrow Delete Sort"
+    And I type ";; let nil"
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -205,16 +194,16 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -222,19 +211,20 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I turn on read-only-mode
     And I start an action chain
     And I press "d"
-    And I type "Narrow"
+    And I type ";;"
     And I execute the action chain
     Then inserting "hello world" should throw an error
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -242,19 +232,20 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     When I turn off read-only-mode
     And I start an action chain
     And I press "x"
-    And I type "Sort"
+    And I type "defvar"
     And I execute the action chain
     And I place the cursor between "at " and "Fri"
     And I insert "hello world "
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at hello world Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:110:  "Sort lines in the search buffer output.
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2481:(defvar undo-in-progress nil
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
 
 
@@ -263,25 +254,22 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     And the buffer is empty
     And I insert:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:41:  "Clear buffer-read-only and save the original buffer-read-only state."
-double-saber.el:42:  (let ((initial-read-only buffer-read-only))
-double-saber.el:43:    (buffer-enable-undo)
-double-saber.el:48:  "Restore buffer-read-only state based on the READ-ONLY argument given."
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2492:  (let ((undo-in-progress t))
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2393:      (setq undo-in-region
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2409:                                (if undo-in-region " in region" ""))))
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2395:      (if undo-in-region
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """
     And I turn on grep-mode
     And I start an action chain
@@ -289,23 +277,20 @@ Grep finished with 14 matches found at Fri Dec 20 00:20:48
     And I execute the action chain
     Then I should see:
 """
--*- mode: grep; default-directory: "~/double-saber/" -*-
+-*- mode: grep; default-directory: "/usr/local/share/emacs/26.1/lisp/" -*-
 Grep started at Fri Dec 20 00:20:48
 
-grep --color -nH --null -e buffer double-saber.el
-double-saber.el:110:  "Sort lines in the search buffer output.
-double-saber.el:146:the search command. If nil, it defaults to the start of the buffer.
-double-saber.el:148:END-TEXT should be set to the end text in the buffer that should not be deleted,
-double-saber.el:150:buffer."
-double-saber.el:1:;;; double-saber.el --- Narrow and delete in search buffers.  -*- lexical-binding: t; -*-
-double-saber.el:41:  "Clear buffer-read-only and save the original buffer-read-only state."
-double-saber.el:42:  (let ((initial-read-only buffer-read-only))
-double-saber.el:43:    (buffer-enable-undo)
-double-saber.el:48:  "Restore buffer-read-only state based on the READ-ONLY argument given."
-double-saber.el:66:          (end-of-buffer))
-double-saber.el:67:      (end-of-buffer))
-double-saber.el:81:  "Narrow the search buffer output using FILTER.
-double-saber.el:96:  "Delete all lines in the buffer using FILTER.
+zgrep --color -nH -e undo-in simple.el.gz
+./simple.el.gz:2343:A redo record for undo-in-region maps to t.
+./simple.el.gz:2346:(defvar undo-in-region nil
+./simple.el.gz:2393:      (setq undo-in-region
+./simple.el.gz:2395:      (if undo-in-region
+./simple.el.gz:2409:                                (if undo-in-region " in region" ""))))
+./simple.el.gz:2424:    ;; I don't know how to do that in the undo-in-region case.
+./simple.el.gz:2433:               (if (or undo-in-region (eq list pending-undo-list))
+./simple.el.gz:2481:(defvar undo-in-progress nil
+./simple.el.gz:2491:                          (and undo-in-region " for region"))))
+./simple.el.gz:2492:  (let ((undo-in-progress t))
 
-Grep finished with 14 matches found at Fri Dec 20 00:20:48
+Grep finished with matches found at Fri Dec 20 00:20:48
 """

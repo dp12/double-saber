@@ -25,18 +25,16 @@
 ;; To load this file, add (require 'double-saber) to your init file.
 ;;
 ;; You can configure double-saber for different modes using
-;; double-saber-mode-setup. The following are a few examples.
+;; double-saber-mode-setup. The following is an example for ripgrep.
 ;;
-;; (double-saber-mode-setup grep-mode-map 'grep-mode-hook 5 "Grep finished")
-;; (double-saber-mode-setup ggtags-global-mode-map 'ggtags-global-mode-hook 5 "Global found")
-;; (double-saber-mode-setup ripgrep-search-mode-map 'ripgrep-search-mode-hook 5 "Ripgrep finished")
-;; (double-saber-mode-setup ivy-occur-grep-mode-map 'ivy-occur-grep-mode-hook 5 nil)
+;;(add-hook 'ripgrep-search-mode-hook
+;;          (lambda ()
+;;            (double-saber-mode)
+;;            (setq-local double-saber-start-line 5)
+;;            (setq-local double-saber-end-text "Ripgrep finished")))
 ;;
-;; (add-hook 'ripgrep-search-mode-hook
-          ;; (lambda ()
-            ;; (double-saber-mode)
-            ;; (setq-local double-saber-start-line 5)
-            ;; (setq-local double-saber-end-text "Ripgrep finished")))
+;; Setting the start line and end text prevents useful text at those locations
+;; from getting deleted.
 
 ;;; Code:
 (require 'subr-x) ;; for string-trim
@@ -131,28 +129,18 @@ If the REVERSE flag is true, the lines are sorted in reverse order."
       (undo arg))))
 
 ;; Mode-specific setup
-(defun double-saber-mode-setup (keymap hook &optional start-line end-text)
-  "Set up double-saber default keybindings and start/end bounds for a mode.
-KEYMAP is the keymap of the major mode to configure.
-HOOK is the mode hook of the major mode to configure. The HOOK argument must be
-quoted.
-
-START-LINE should be set to the line after the search command, to avoid deleting
-the search command. If nil, it defaults to the start of the buffer.
-
-END-TEXT should be set to the end text in the buffer that should not be deleted,
-e.g. a string such as 'Search finished.' If nil, it defaults to the end of the
-buffer."
-  (define-key keymap (kbd "d") 'double-saber-delete)
-  (define-key keymap (kbd "x") 'double-saber-narrow)
-  (define-key keymap (kbd "s") 'double-saber-sort-lines)
-  (define-key keymap (kbd "u") 'double-saber-undo)
-  (define-key keymap (kbd "C-r") 'double-saber-redo)
-  (define-key keymap (kbd "C-_") 'double-saber-redo)
-  (add-hook hook
-            (lambda ()
-              (setq-local double-saber-start-line start-line)
-              (setq-local double-saber-end-text end-text))))
+;;;###autoload
+(define-minor-mode double-saber-mode
+  "Delete/narrow text with regular expressions or multiple keywords."
+  :lighter "⚔"
+  :keymap (let ((keymap (make-sparse-keymap)))
+            (define-key keymap (kbd "d") 'double-saber-delete)
+            (define-key keymap (kbd "x") 'double-saber-narrow)
+            (define-key keymap (kbd "s") 'double-saber-sort-lines)
+            (define-key keymap (kbd "u") 'double-saber-undo)
+            (define-key keymap (kbd "C-r") 'double-saber-redo)
+            (define-key keymap (kbd "C-_") 'double-saber-redo)
+            keymap))
 
 (provide 'double-saber)
 
