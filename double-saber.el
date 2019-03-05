@@ -116,7 +116,7 @@ If the REVERSE flag is true, the lines are sorted in reverse order."
   "Undo changes. An optional numeric ARG serves as a repeat count."
   (interactive "P")
   (let ((inhibit-read-only t))
-    (if (fboundp 'undo-tree-undo)
+    (if (and (bound-and-true-p undo-tree-mode) (fboundp 'undo-tree-undo))
         (undo-tree-undo arg)
       (undo arg))))
 
@@ -124,7 +124,7 @@ If the REVERSE flag is true, the lines are sorted in reverse order."
   "Redo changes. An optional numeric ARG serves as a repeat count."
   (interactive "P")
   (let ((inhibit-read-only t))
-    (if (fboundp 'undo-tree-redo)
+    (if (and (bound-and-true-p undo-tree-mode) (fboundp 'undo-tree-redo))
         (undo-tree-redo arg)
       (undo arg))))
 
@@ -132,7 +132,7 @@ If the REVERSE flag is true, the lines are sorted in reverse order."
 ;;;###autoload
 (define-minor-mode double-saber-mode
   "Delete/narrow text with regular expressions or multiple keywords."
-  :lighter "⚔"
+  :lighter " Dsaber"
   :keymap (let ((keymap (make-sparse-keymap)))
             (define-key keymap (kbd "d") 'double-saber-delete)
             (define-key keymap (kbd "x") 'double-saber-narrow)
