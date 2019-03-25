@@ -22,6 +22,12 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+;;
+;; A minor mode for filtering search buffer output.
+;;
+;; With double-saber-mode enabled, use "d" to delete words and "x" to narrow.
+;;
+;; Installation:
 ;; To load this file, add (require 'double-saber) to your init file.
 ;;
 ;; You can configure double-saber for different modes using
@@ -35,6 +41,9 @@
 ;;
 ;; Setting the start line and end text prevents useful text at those locations
 ;; from getting deleted.
+;;
+;; Please see README.md for more documentation, or read it online at
+;; https://github.com/dp12/double-saber
 
 ;;; Code:
 (require 'subr-x) ;; for string-trim
