@@ -1,5 +1,7 @@
 *  [[file:https://i.imgur.com/7axtkyH.png]] double-saber
 
+[[https://stable.melpa.org/#/double-saber][file:https://stable.melpa.org/packages/double-saber-badge.svg]]
+[[https://melpa.org/#/double-saber][file:https://melpa.org/packages/double-saber-badge.svg]]
 [[https://travis-ci.org/dp12/double-saber][file:https://api.travis-ci.org/dp12/double-saber.png?branch=master]]
 [[http://www.gnu.org/licenses/gpl-3.0.html][file:http://img.shields.io/:license-gpl3-blue.svg]]
 
@@ -18,7 +20,13 @@ Smite undesired output by either providing a single regexp (with no spaces), or 
 
 Please note that double-saber, being a chopping weapon, is not meant to be very intelligent or precise. It won't play nicely with packages like [[https://github.com/Wilfred/deadgrep][deadgrep]] that interleave lines of search metadata between search results. But when grep is spitting out dark clouds of text and raw greptitude does not avail you, it might be exactly what you need.
 * Installation
-You can load double-saber with use-package:
+double-saber is available on MELPA. You can install it with:
+
+#+begin_src emacs-lisp
+M-x package-install double-saber
+#+end_src
+
+double-saber can also be loaded with use-package:
 #+begin_src emacs-lisp
   (use-package double-saber
     :load-path "~/double-saber"
