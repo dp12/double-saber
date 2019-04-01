@@ -1,1 +1,2 @@
 *.el linguist-language=Emacs Lisp
+features/* linguist-vendored
