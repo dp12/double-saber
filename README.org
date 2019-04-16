@@ -59,7 +59,7 @@ The following are some examples for how to set up double-saber for different maj
             (lambda ()
               (double-saber-mode)
               (setq-local double-saber-start-line 5)
-              (setq-local double-saber-end-text "Grep finished")))
+              (setq-local double-saber-end-text "Grep finished"))))
 
 (with-eval-after-load "ggtags"
   (add-hook 'ggtags-global-mode-hook
@@ -72,7 +72,7 @@ The following are some examples for how to set up double-saber for different maj
   (add-hook 'ivy-occur-grep-mode-hook
             (lambda ()
               (double-saber-mode)
-              (setq-local double-saber-start-line 5)))
+              (setq-local double-saber-start-line 5))))
 #+end_src
 * Keybindings
 =double-saber-mode= provides the following keybindings when enabled:
