@@ -121,7 +121,7 @@ Or, if you are a spacemacs user, you can use =spacemacs|define-transient-state=:
     (define-key ripgrep-search-mode-map (kbd "x") 'spacemacs/foo-filter-transient-state/body))
 #+end_src
 * FAQ
-*Isn't this just the same as =flush-lines=?*
+*Isn't this just the same as "flush-lines"?*
 
 One difference vs. =flush-lines= is if you enter multiple words for double-saber-delete, it will generate a matching regex that is handed to =delete-matching-lines=. So entering "emacs vim" will generate a regex that deletes lines containing emacs or vim. =flush-lines= will treat that as a single regex and delete neither. Another difference is that =flush-lines= deletes from the current line to the end of the buffer. double-saber will start deleting from the top of the buffer or whatever starting line is specified (usually after the search command).
 
