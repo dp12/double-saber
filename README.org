@@ -6,7 +6,7 @@
 [[http://www.gnu.org/licenses/gpl-3.0.html][file:http://img.shields.io/:license-gpl3-blue.svg]]
 
 * Overview
-Search buffer output from tools like [[https://github.com/nlamirault/ripgrep.el][ripgrep]], [[https://github.com/leoliu/ggtags][ggtags]], or [[https://oremacs.com/2015/11/04/ivy-occur/][ivy-occur]] often gets cluttered with results that are irrevelant. How can we remove the unwanted cruft?
+Search buffer output from tools like [[https://github.com/nlamirault/ripgrep.el][ripgrep]], [[https://github.com/leoliu/ggtags][ggtags]], or [[https://oremacs.com/2015/11/04/ivy-occur/][ivy-occur]] often gets cluttered with results that are irrelevant. How can we remove the unwanted cruft?
 
 double-saber provides two methods of cutting away undesired output: narrow and delete.
 
