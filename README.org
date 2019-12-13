@@ -130,6 +130,12 @@ double-saber also enables undo so that you can bring back what you deleted, some
 
 Lastly, it keeps metadata like the search command and original number of search hits from being deleted.
 
+*What's up with the name?*
+
+The inspiration for this package came when I saw a reddit comment that jokingly
+wished =M-x sword-mode= existed in emacs. After I created double-saber's core
+filter functions to help me at my day job, I thought that two swords were better than one.
+
 *Your demo video of double-saber was a little lacking in excitement. Do you have a better one?*
 
 [[https://youtu.be/S9MafXsex2Y][Here you go]].
