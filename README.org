@@ -5,7 +5,7 @@
 [[https://travis-ci.org/dp12/double-saber][file:https://api.travis-ci.org/dp12/double-saber.png?branch=master]]
 [[http://www.gnu.org/licenses/gpl-3.0.html][file:http://img.shields.io/:license-gpl3-blue.svg]]
 
-[[file:https://i.imgur.com/9WVrApd.jpg]]
+[[file:https://i.imgur.com/7YoialK.png]]
 * Overview
 Search buffer output from tools like [[https://github.com/nlamirault/ripgrep.el][ripgrep]], [[https://github.com/leoliu/ggtags][ggtags]], or [[https://oremacs.com/2015/11/04/ivy-occur/][ivy-occur]] often gets cluttered with results that are irrelevant. How can we remove the unwanted cruft?
 
@@ -138,7 +138,8 @@ filter functions to help me at my day job, I thought that two swords were better
 
 *Your demo video of double-saber was a little lacking in excitement. Do you have a better one?*
 
-[[https://youtu.be/S9MafXsex2Y][Here you go]].
+While I would love to bring you amazing gifs of Michelle Yeoh using emacs and doing M-x butterfly-twists, I regret that I have but one YouTube link to give for my country. [[https://youtu.be/S9MafXsex2Y][Here you go]].
+
 * Misc
 double-saber is integration-tested with ecukes [[https://github.com/ecukes/ecukes][🥒]] and is licensed under the GPLv3.
 
